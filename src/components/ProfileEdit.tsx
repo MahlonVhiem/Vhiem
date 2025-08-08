@@ -9,7 +9,7 @@ interface ProfileEditProps {
 }
 
 export function ProfileEdit({ onClose }: ProfileEditProps) {
-  const userProfile = useQuery(api.users.getUserProfile);
+  const userProfile = useQuery(api.profiles.getCurrentUserProfile);
   const updateProfile = useMutation(api.profiles.updateProfile);
   
   const [formData, setFormData] = useState({
@@ -101,8 +101,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
         return (
           <>
             <div>
-              <label className="block text-white font-medium mb-2">Business Name</label>
+              <label htmlFor="businessName" className="block text-white font-medium mb-2">Business Name</label>
               <input
+                id="businessName"
                 type="text"
                 value={formData.businessName}
                 onChange={(e) => setFormData(prev => ({ ...prev, businessName: e.target.value }))}
@@ -111,8 +112,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
               />
             </div>
             <div>
-              <label className="block text-white font-medium mb-2">Business Category</label>
+              <label htmlFor="businessCategory" className="block text-white font-medium mb-2">Business Category</label>
               <input
+                id="businessCategory"
                 type="text"
                 value={formData.businessCategory}
                 onChange={(e) => setFormData(prev => ({ ...prev, businessCategory: e.target.value }))}
@@ -121,8 +123,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
               />
             </div>
             <div>
-              <label className="block text-white font-medium mb-2">Business Hours</label>
+              <label htmlFor="businessHours" className="block text-white font-medium mb-2">Business Hours</label>
               <input
+                id="businessHours"
                 type="text"
                 value={formData.businessHours}
                 onChange={(e) => setFormData(prev => ({ ...prev, businessHours: e.target.value }))}
@@ -131,8 +134,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
               />
             </div>
             <div>
-              <label className="block text-white font-medium mb-2">Services (comma separated)</label>
+              <label htmlFor="businessServices" className="block text-white font-medium mb-2">Services (comma separated)</label>
               <input
+                id="businessServices"
                 type="text"
                 value={businessServicesInput}
                 onChange={(e) => setBusinessServicesInput(e.target.value)}
@@ -146,8 +150,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
         return (
           <>
             <div>
-              <label className="block text-white font-medium mb-2">Vehicle Type</label>
+              <label htmlFor="vehicleType" className="block text-white font-medium mb-2">Vehicle Type</label>
               <input
+                id="vehicleType"
                 type="text"
                 value={formData.vehicleType}
                 onChange={(e) => setFormData(prev => ({ ...prev, vehicleType: e.target.value }))}
@@ -156,8 +161,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
               />
             </div>
             <div>
-              <label className="block text-white font-medium mb-2">Delivery Radius (miles)</label>
+              <label htmlFor="deliveryRadius" className="block text-white font-medium mb-2">Delivery Radius (miles)</label>
               <input
+                id="deliveryRadius"
                 type="number"
                 value={formData.deliveryRadius}
                 onChange={(e) => setFormData(prev => ({ ...prev, deliveryRadius: parseInt(e.target.value) || 0 }))}
@@ -166,8 +172,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
               />
             </div>
             <div>
-              <label className="block text-white font-medium mb-2">Availability</label>
+              <label htmlFor="availability" className="block text-white font-medium mb-2">Availability</label>
               <input
+                id="availability"
                 type="text"
                 value={formData.availability}
                 onChange={(e) => setFormData(prev => ({ ...prev, availability: e.target.value }))}
@@ -181,8 +188,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
         return (
           <>
             <div>
-              <label className="block text-white font-medium mb-2">Interests (comma separated)</label>
+              <label htmlFor="interests" className="block text-white font-medium mb-2">Interests (comma separated)</label>
               <input
+                id="interests"
                 type="text"
                 value={interestsInput}
                 onChange={(e) => setInterestsInput(e.target.value)}
@@ -191,12 +199,13 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
               />
             </div>
             <div>
-              <label className="block text-white font-medium mb-2">Favorite Bible Verses (one per line)</label>
+              <label htmlFor="favoriteVerses" className="block text-white font-medium mb-2">Favorite Bible Verses (one per line)</label>
               <textarea
+                id="favoriteVerses"
                 value={favoriteVersesInput}
                 onChange={(e) => setFavoriteVersesInput(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
-                placeholder="e.g., John 3:16&#10;Philippians 4:13"
+                placeholder="e.g., John 3:16\nPhilippians 4:13"
                 rows={4}
               />
             </div>
@@ -237,8 +246,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
 
           {/* Basic Info */}
           <div>
-            <label className="block text-white font-medium mb-2">Display Name *</label>
+            <label htmlFor="displayName" className="block text-white font-medium mb-2">Display Name *</label>
             <input
+              id="displayName"
               type="text"
               value={formData.displayName}
               onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
@@ -249,8 +259,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
           </div>
 
           <div>
-            <label className="block text-white font-medium mb-2">Bio</label>
+            <label htmlFor="bio" className="block text-white font-medium mb-2">Bio</label>
             <textarea
+              id="bio"
               value={formData.bio}
               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
               className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
@@ -260,8 +271,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
           </div>
 
           <div>
-            <label className="block text-white font-medium mb-2">Location</label>
+            <label htmlFor="location" className="block text-white font-medium mb-2">Location</label>
             <input
+              id="location"
               type="text"
               value={formData.location}
               onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
@@ -271,8 +283,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
           </div>
 
           <div>
-            <label className="block text-white font-medium mb-2">Website</label>
+            <label htmlFor="website" className="block text-white font-medium mb-2">Website</label>
             <input
+              id="website"
               type="url"
               value={formData.website}
               onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
@@ -282,8 +295,9 @@ export function ProfileEdit({ onClose }: ProfileEditProps) {
           </div>
 
           <div>
-            <label className="block text-white font-medium mb-2">Phone</label>
+            <label htmlFor="phone" className="block text-white font-medium mb-2">Phone</label>
             <input
+              id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}

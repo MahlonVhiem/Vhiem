@@ -24,6 +24,7 @@ export function PostFeed({ onProfileClick }: PostFeedProps) {
   const [showReplies, setShowReplies] = useState<Record<string, boolean>>({});
   const [followingStates, setFollowingStates] = useState<Record<string, boolean>>({});
   const [mentionedUsers, setMentionedUsers] = useState<Record<string, string[]>>({});
+  const [expandedPosts, setExpandedPosts] = useState<Record<string, boolean>>({});
 
   const handleLike = async (postId: string) => {
     try {
@@ -122,21 +123,42 @@ export function PostFeed({ onProfileClick }: PostFeedProps) {
     }
   };
 
-  const renderContentWithMentions = (content: string) => {
-    const mentionRegex = /@(\w+)/g;
-    const parts = content.split(mentionRegex);
-    
-    return parts.map((part, index) => {
-      if (index % 2 === 1) {
-        // This is a mention
-        return (
-          <span key={index} className="text-blue-400 font-medium">
-            @{part}
-          </span>
-        );
-      }
-      return part;
-    });
+  const renderContentWithMentions = (content: string, postId: string) => {
+    const isExpanded = expandedPosts[postId];
+    const isLong = content.length > 250;
+
+    const toggleExpanded = () => {
+      setExpandedPosts(prev => ({ ...prev, [postId]: !isExpanded }));
+    };
+
+    const renderText = () => {
+      const textToShow = isExpanded ? content : `${content.substring(0, 250)}${isLong ? "..." : ""}`;
+      const mentionRegex = /@(\w+)/g;
+      const parts = textToShow.split(mentionRegex);
+      
+      return parts.map((part, index) => {
+        if (index % 2 === 1) {
+          // This is a mention
+          return (
+            <span key={index} className="text-blue-400 font-medium">
+              @{part}
+            </span>
+          );
+        }
+        return part;
+      });
+    };
+
+    return (
+      <div>
+        {renderText()}
+        {isLong && (
+          <button onClick={toggleExpanded} className="text-blue-400 hover:underline ml-2">
+            {isExpanded ? "See Less" : "See More"}
+          </button>
+        )}
+      </div>
+    );
   };
 
   if (!posts) {
@@ -178,7 +200,7 @@ export function PostFeed({ onProfileClick }: PostFeedProps) {
             onProfileClick={onProfileClick}
             getPostTypeStyle={getPostTypeStyle}
             getPostTypeIcon={getPostTypeIcon}
-            renderContentWithMentions={renderContentWithMentions}
+            renderContentWithMentions={(content) => renderContentWithMentions(content, post._id)}
           />
         ))
       )}

@@ -2,6 +2,36 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
+export const getCurrentUserProfile = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return null;
+    }
+
+    const profile = await ctx.db
+      .query("userProfiles")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .unique();
+
+    if (!profile) {
+      return null;
+    }
+
+    // Get profile photo URL if it exists
+    let profilePhotoUrl = null;
+    if (profile.profilePhotoId) {
+      profilePhotoUrl = await ctx.storage.getUrl(profile.profilePhotoId);
+    }
+
+    return {
+      ...profile,
+      profilePhotoUrl,
+    };
+  },
+});
+
 export const updateProfile = mutation({
   args: {
     displayName: v.optional(v.string()),
