@@ -98,6 +98,17 @@ const applicationTables = {
   }).index("by_follower", ["followerId"])
     .index("by_following", ["followingId"])
     .index("by_follower_following", ["followerId", "followingId"]),
+
+  voiceChatRooms: defineTable({
+    creatorId: v.id("users"),
+    hosts: v.array(v.id("users")),
+    name: v.string(),
+    description: v.optional(v.string()),
+    listenerLimit: v.union(v.literal(5), v.literal(10), v.literal("unlimited")),
+    participants: v.array(v.id("users")),
+    status: v.union(v.literal("active"), v.literal("ended")),
+  }).index("by_creator", ["creatorId"])
+    .index("by_status", ["status"]),
 };
 
 export default defineSchema({

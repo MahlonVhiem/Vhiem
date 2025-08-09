@@ -10,9 +10,10 @@ import { ProfileView } from "./ProfileView";
 import { ProfileEdit } from "./ProfileEdit";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { ClickableProfilePicture } from "./ClickableProfilePicture";
+import { VoiceChatRoomPage } from "./VoiceChatRoomPage";
 
 export function Dashboard() {
-  const [activeTab, setActiveTab] = useState<"feed" | "create" | "stats" | "leaderboard" | "people">("feed");
+  const [activeTab, setActiveTab] = useState<"feed" | "create" | "voice" | "stats" | "leaderboard" | "people">("feed");
   const [showProfileView, setShowProfileView] = useState<string | null>(null);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const userProfile = useQuery(api.users.getUserProfile);
@@ -20,6 +21,7 @@ export function Dashboard() {
   const tabs = [
     { id: "feed" as const, label: "Feed", icon: "🏠" },
     { id: "create" as const, label: "Create", icon: "✍️" },
+    { id: "voice" as const, label: "Voice", icon: "🎙️" },
     { id: "people" as const, label: "People", icon: "👥" },
     { id: "stats" as const, label: "Stats", icon: "📊" },
     { id: "leaderboard" as const, label: "Leaders", icon: "🏆" },
@@ -96,6 +98,7 @@ export function Dashboard() {
       <div className="animate-slide-up">
         {activeTab === "feed" && <PostFeed onProfileClick={setShowProfileView} />}
         {activeTab === "create" && <PostCreator />}
+        {activeTab === "voice" && <VoiceChatRoomPage />}
         {activeTab === "people" && <PeopleDirectory onProfileClick={setShowProfileView} />}
         {activeTab === "stats" && <UserStats />}
         {activeTab === "leaderboard" && <Leaderboard onProfileClick={setShowProfileView} />}
