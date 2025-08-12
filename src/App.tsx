@@ -39,7 +39,6 @@ export default function App() {
 }
 
 function Content() {
-  const loggedInUser = useQuery(api.auth.loggedInUser);
   const userProfile = useQuery(api.users.getUserProfile);
   const [preSelectedRole, setPreSelectedRole] = useState<"shopper" | "business" | "delivery_driver" | null>(null);
 
@@ -51,7 +50,7 @@ function Content() {
     }
   }, []);
 
-  if (loggedInUser === undefined || userProfile === undefined) {
+  if (userProfile === undefined) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent"></div>
