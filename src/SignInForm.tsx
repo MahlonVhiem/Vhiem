@@ -17,7 +17,13 @@ export function SignInForm() {
           setSubmitting(true);
           const formData = new FormData(e.target as HTMLFormElement);
           formData.set("flow", flow);
-          void signIn("password", formData).catch((error) => {
+          void signIn("password", formData)
+            .then((result) => {
+              console.log("Sign in successful, result:", result);
+              setSubmitting(false); // Stop submitting state
+              // Optionally, you might want to redirect or show a success message here
+            })
+            .catch((error) => {
             let toastTitle = "";
             if (error.message.includes("Invalid password")) {
               toastTitle = "Invalid password. Please try again.";
