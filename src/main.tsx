@@ -4,8 +4,18 @@ import { ConvexReactClient } from "convex/react";
 import "./index.css";
 import App from "./App";
 
-console.log('VITE_CONVEX_URL:', import.meta.env.VITE_CONVEX_URL);
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+const convexUrl = import.meta.env.VITE_CONVEX_URL;
+console.log('VITE_CONVEX_URL:', convexUrl);
+
+if (!convexUrl) {
+  throw new Error(
+    "Missing VITE_CONVEX_URL environment variable.\n" +
+    "Run 'npm run dev' to start the Convex development server, or\n" +
+    "add VITE_CONVEX_URL to your .env.local file."
+  );
+}
+
+const convex = new ConvexReactClient(convexUrl);
 
 createRoot(document.getElementById("root")!).render(
   <ConvexAuthProvider client={convex}>
