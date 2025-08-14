@@ -26,7 +26,7 @@ export const createProfile = mutation({
     }
 
     const profileId = await ctx.db.insert("userProfiles", {
-      userId: ctx.db.normalizeId("users", userId),
+      userId: userId,
       role: args.role,
       displayName: args.displayName,
       bio: args.bio,
@@ -38,7 +38,7 @@ export const createProfile = mutation({
 
     // Award welcome points
     await ctx.db.insert("pointTransactions", {
-      userId: ctx.db.normalizeId("users", userId),
+      userId: userId,
       points: 100,
       action: "welcome",
       description: "Welcome to Vhiem! 🙏",
