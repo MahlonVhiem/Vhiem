@@ -17,7 +17,7 @@ export const createPost = mutation({
     }
 
     const postId = await ctx.db.insert("posts", {
-      authorId: ctx.db.normalizeId("users", userId),
+      authorId: userId,
       content: args.content,
       type: args.type,
       tags: args.tags,
@@ -30,7 +30,7 @@ export const createPost = mutation({
     // Award points for posting
     const profile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", ctx.db.normalizeId("users", userId)))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .unique();
 
     if (profile) {
@@ -40,7 +40,7 @@ export const createPost = mutation({
       });
 
       await ctx.db.insert("pointTransactions", {
-        userId: ctx.db.normalizeId("users", userId),
+        userId: userId,
         points: pointsToAward,
         action: "post",
         description: `Posted a ${args.type} 📝`,
@@ -357,7 +357,7 @@ export const addComment = mutation({
   args: {
     postId: v.id("posts"),
     content: v.string(),
-    mentionedUsers: v.optional(v.array(v.string())),
+    mentionedUsers: v.optional(v.array(v.id("users"))),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -411,23 +411,14 @@ export const addCommentReply = mutation({
     mentionedUsers: v.optional(v.array(v.id("users"))),
   },
   handler: async (ctx, args) => {
-    const clerkUserId = await getAuthUserId(ctx);
-    if (!clerkUserId) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("Not authenticated");
-    }
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
-      .unique();
-
-    if (!user) {
-      throw new Error("User not found");
     }
 
     const replyId = await ctx.db.insert("commentReplies", {
       commentId: args.commentId,
-      authorId: user._id,
+      authorId: userId,
       content: args.content,
       mentionedUsers: args.mentionedUsers || [],
     });
@@ -435,7 +426,7 @@ export const addCommentReply = mutation({
     // Award points for replying
     const profile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .unique();
 
     if (profile) {
@@ -444,7 +435,7 @@ export const addCommentReply = mutation({
       });
 
       await ctx.db.insert("pointTransactions", {
-        userId: user._id,
+        userId: userId,
         points: 5,
         action: "reply",
         description: "Replied to a comment 💬",
