@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useQuery } from "convex/react";
 import { Authenticated, Unauthenticated } from "@convex-dev/auth/react";
 import { api } from "../convex/_generated/api";
