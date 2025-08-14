@@ -17,7 +17,7 @@ export const createPost = mutation({
     }
 
     const postId = await ctx.db.insert("posts", {
-      authorId: userId,
+      authorId: ctx.db.normalizeId("users", userId),
       content: args.content,
       type: args.type,
       tags: args.tags,
@@ -30,7 +30,7 @@ export const createPost = mutation({
     // Award points for posting
     const profile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", ctx.db.normalizeId("users", userId)))
       .unique();
 
     if (profile) {
@@ -40,7 +40,7 @@ export const createPost = mutation({
       });
 
       await ctx.db.insert("pointTransactions", {
-        userId: userId,
+        userId: ctx.db.normalizeId("users", userId),
         points: pointsToAward,
         action: "post",
         description: `Posted a ${args.type} 📝`,
