@@ -1,3 +1,6 @@
 [build]
-  command = "npm run build"
+  command = "npx convex deploy && npm run build:frontend"
   publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"

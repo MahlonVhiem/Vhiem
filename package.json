@@ -9,6 +9,7 @@
     "dev:backend": "convex dev",
     "setup": "npx convex dev",
     "build": "npx convex deploy && vite build",
+    "build:frontend": "vite build",
     "lint": "tsc -p convex -noEmit --pretty false && tsc -p . -noEmit --pretty false && convex dev --once && vite build"
   },
   "dependencies": {
