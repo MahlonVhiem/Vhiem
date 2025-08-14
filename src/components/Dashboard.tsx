@@ -98,7 +98,6 @@ export function Dashboard() {
       <div className="animate-slide-up">
         {activeTab === "feed" && <PostFeed onProfileClick={setShowProfileView} />}
         {activeTab === "create" && <PostCreator />}
-        {activeTab === "voice" && <VoiceChatRoomPage />}
         {activeTab === "people" && <PeopleDirectory onProfileClick={setShowProfileView} />}
         {activeTab === "stats" && <UserStats />}
         {activeTab === "leaderboard" && <Leaderboard onProfileClick={setShowProfileView} />}
