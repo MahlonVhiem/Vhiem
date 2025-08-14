@@ -10,11 +10,11 @@ interface PostFeedProps {
 }
 
 export function PostFeed({ onProfileClick }: PostFeedProps) {
-  const posts = useQuery(api.posts.getPosts);
-  const likePost = useMutation(api.posts.likePost);
-  const likeComment = useMutation(api.posts.likeComment);
-  const addComment = useMutation(api.posts.addComment);
-  const addCommentReply = useMutation(api.posts.addCommentReply);
+  const posts = useQuery(api.users.getPosts);
+  const likePost = useMutation(api.users.likePost);
+  const likeComment = useMutation(api.users.likeComment);
+  const addComment = useMutation(api.users.addComment);
+  const addCommentReply = useMutation(api.users.addCommentReply);
   const followUser = useMutation(api.users.followUser);
   const unfollowUser = useMutation(api.users.unfollowUser);
   
@@ -253,7 +253,7 @@ function PostItem({
   getPostTypeIcon,
   renderContentWithMentions,
 }: PostItemProps) {
-  const comments = useQuery(api.posts.getPostComments, { postId: post._id });
+  const comments = useQuery(api.users.getPostComments, { postId: post._id });
 
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 animate-slide-up">

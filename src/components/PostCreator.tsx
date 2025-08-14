@@ -12,7 +12,7 @@ export function PostCreator() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   
   const createPost = useMutation(api.posts.createPost);
-  const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
+  const generateUploadUrl = useMutation(api.users.generateUploadUrl);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

@@ -27,7 +27,7 @@ export function UserMentionInput({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const users = useQuery(
-    api.posts.searchUsers,
+    api.users.searchUsers,
     mentionQuery.length >= 2 ? { query: mentionQuery } : "skip"
   );
 

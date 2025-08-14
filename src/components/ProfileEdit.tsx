@@ -9,7 +9,7 @@ interface ProfileEditProps {
 }
 
 export function ProfileEdit({ onClose }: ProfileEditProps) {
-  const userProfile = useQuery(api.profiles.getCurrentUserProfile);
+  const userProfile = useQuery(api.users.getUserProfile);
   const updateProfile = useMutation(api.profiles.updateProfile);
   
   const [formData, setFormData] = useState({
