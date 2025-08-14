@@ -27,9 +27,88 @@ export function Dashboard() {
   ];
 
   if (!userProfile) {
+    // Create a temporary profile for demo purposes
+    const tempProfile = {
+      displayName: "Demo User",
+      role: "shopper",
+      points: 100,
+      level: 1,
+      profilePhotoUrl: null
+    };
+    
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent"></div>
+      <div className="animate-fade-in">
+        {/* Welcome Header */}
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-6 border border-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-black font-bold text-2xl">D</span>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-2">
+                  Welcome back, {tempProfile.displayName}! 👋
+                </h2>
+                <p className="text-white/80">
+                  Role: <span className="capitalize font-medium">{tempProfile.role}</span>
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="flex items-center space-x-3">
+                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full font-bold">
+                  {tempProfile.points} Points
+                </div>
+              </div>
+              <div className="text-white/80 text-sm mt-1">
+                Level {tempProfile.level}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 mb-6 border border-white/20">
+          <div className="flex space-x-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-xl transition-all duration-300 ${
+                  activeTab === tab.id
+                    ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold"
+                    : "text-white/80 hover:bg-white/10"
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="animate-slide-up">
+          {activeTab === "feed" && <PostFeed onProfileClick={setShowProfileView} />}
+          {activeTab === "create" && <PostCreator />}
+          {activeTab === "people" && <PeopleDirectory onProfileClick={setShowProfileView} />}
+          {activeTab === "stats" && <UserStats />}
+          {activeTab === "leaderboard" && <Leaderboard onProfileClick={setShowProfileView} />}
+        </div>
+
+        {/* Profile Modals */}
+        {showProfileView && (
+          <ProfileView 
+            userId={showProfileView} 
+            onClose={() => setShowProfileView(null)} 
+          />
+        )}
+        
+        {showProfileEdit && (
+          <ProfileEdit 
+            onClose={() => setShowProfileEdit(false)} 
+          />
+        )}
       </div>
     );
   }
