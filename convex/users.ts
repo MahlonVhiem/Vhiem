@@ -10,15 +10,32 @@ export const createProfile = mutation({
     bio: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
+    const clerkUserId = await getAuthUserId(ctx);
+    if (!clerkUserId) {
       throw new Error("Not authenticated");
+    }
+
+    // First, create or get the user document
+    let user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
+      .unique();
+
+    if (!user) {
+      // Create user document if it doesn't exist
+      const userId = await ctx.db.insert("users", {
+        clerkId: clerkUserId,
+      });
+      user = await ctx.db.get(userId);
+      if (!user) {
+        throw new Error("Failed to create user");
+      }
     }
 
     // Check if profile already exists
     const existingProfile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .unique();
 
     if (existingProfile) {
@@ -26,7 +43,7 @@ export const createProfile = mutation({
     }
 
     const profileId = await ctx.db.insert("userProfiles", {
-      userId: ctx.db.normalizeId("users", userId),
+      userId: user._id,
       role: args.role,
       displayName: args.displayName,
       bio: args.bio,
@@ -38,7 +55,7 @@ export const createProfile = mutation({
 
     // Award welcome points
     await ctx.db.insert("pointTransactions", {
-      userId: ctx.db.normalizeId("users", userId),
+      userId: user._id,
       points: 100,
       action: "welcome",
       description: "Welcome to Vhiem! 🙏",
@@ -51,14 +68,24 @@ export const createProfile = mutation({
 export const getUserProfile = query({
   args: {},
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
+    const clerkUserId = await getAuthUserId(ctx);
+    if (!clerkUserId) {
+      return null;
+    }
+
+    // Get the user document first
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
+      .unique();
+
+    if (!user) {
       return null;
     }
 
     const profile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .unique();
 
     if (!profile) {
