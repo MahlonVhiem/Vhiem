@@ -149,7 +149,7 @@ export const removeProfilePhoto = mutation({
 
 export const getProfileById = query({
   args: {
-    userId: v.string(),
+    userId: v.id("users"),
   },
   handler: async (ctx, args) => {
     const profile = await ctx.db

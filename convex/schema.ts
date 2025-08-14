@@ -4,7 +4,7 @@ import { authTables } from "@convex-dev/auth/server";
 
 const applicationTables = {
   userProfiles: defineTable({
-    userId: v.string(),
+    userId: v.id("users"),
     role: v.union(v.literal("shopper"), v.literal("business"), v.literal("delivery_driver")),
     displayName: v.string(),
     bio: v.optional(v.string()),
@@ -32,7 +32,7 @@ const applicationTables = {
   }).index("by_user", ["userId"]),
 
   posts: defineTable({
-    authorId: v.string(),
+    authorId: v.id("users"),
     content: v.string(),
     type: v.union(v.literal("verse"), v.literal("prayer"), v.literal("testimony"), v.literal("general")),
     likes: v.number(),
@@ -44,21 +44,21 @@ const applicationTables = {
 
   comments: defineTable({
     postId: v.id("posts"),
-    authorId: v.string(),
+    authorId: v.id("users"),
     content: v.string(),
     likes: v.number(),
-    mentionedUsers: v.optional(v.array(v.string())),
+    mentionedUsers: v.optional(v.array(v.id("users"))),
   }).index("by_post", ["postId"]),
 
   commentReplies: defineTable({
     commentId: v.id("comments"),
-    authorId: v.string(),
+    authorId: v.id("users"),
     content: v.string(),
-    mentionedUsers: v.optional(v.array(v.string())),
+    mentionedUsers: v.optional(v.array(v.id("users"))),
   }).index("by_comment", ["commentId"]),
 
   likes: defineTable({
-    userId: v.string(),
+    userId: v.id("users"),
     postId: v.optional(v.id("posts")),
     commentId: v.optional(v.id("comments")),
     type: v.union(v.literal("post"), v.literal("comment")),
@@ -66,14 +66,14 @@ const applicationTables = {
     .index("by_user_comment", ["userId", "commentId"]),
 
   pointTransactions: defineTable({
-    userId: v.string(),
+    userId: v.id("users"),
     points: v.number(),
     action: v.string(),
     description: v.string(),
   }).index("by_user", ["userId"]),
 
   businesses: defineTable({
-    ownerId: v.string(),
+    ownerId: v.id("users"),
     name: v.string(),
     description: v.string(),
     category: v.string(),
@@ -83,8 +83,8 @@ const applicationTables = {
 
   deliveryRequests: defineTable({
     businessId: v.id("businesses"),
-    driverId: v.optional(v.string()),
-    shopperId: v.string(),
+    driverId: v.optional(v.id("users")),
+    shopperId: v.id("users"),
     description: v.string(),
     status: v.union(v.literal("pending"), v.literal("accepted"), v.literal("completed"), v.literal("cancelled")),
     points: v.number(),
@@ -93,8 +93,8 @@ const applicationTables = {
     .index("by_shopper", ["shopperId"]),
 
   follows: defineTable({
-    followerId: v.string(),
-    followingId: v.string(),
+    followerId: v.id("users"),
+    followingId: v.id("users"),
   }).index("by_follower", ["followerId"])
     .index("by_following", ["followingId"])
     .index("by_follower_following", ["followerId", "followingId"]),
