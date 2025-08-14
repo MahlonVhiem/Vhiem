@@ -282,7 +282,15 @@ export const getFollowCounts = query({
 export const getAllUsers = query({
   args: {},
   handler: async (ctx) => {
-    const currentUserId = await getAuthUserId(ctx);
+    const clerkUserId = await getAuthUserId(ctx);
+    let currentUser = null;
+    if (clerkUserId) {
+      currentUser = await ctx.db
+        .query("users")
+        .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
+        .unique();
+    }
+
     const profiles = await ctx.db
       .query("userProfiles")
       .order("desc")
@@ -291,11 +299,11 @@ export const getAllUsers = query({
     const usersWithFollowStatus = await Promise.all(
       profiles.map(async (profile) => {
         let isFollowing = false;
-        if (currentUserId && currentUserId !== profile.userId) {
+        if (currentUser && currentUser._id !== profile.userId) {
           const followRecord = await ctx.db
             .query("follows")
-            .withIndex("by_follower_following", (q) => 
-              q.eq("followerId", currentUserId).eq("followingId", profile.userId)
+            .withIndex("by_follower_following", (q) =>
+              q.eq("followerId", currentUser._id).eq("followingId", profile.userId)
             )
             .unique();
           isFollowing = !!followRecord;
@@ -311,7 +319,7 @@ export const getAllUsers = query({
           ...profile,
           profilePhotoUrl,
           isFollowing,
-          canFollow: currentUserId && currentUserId !== profile.userId,
+          canFollow: currentUser && currentUser._id !== profile.userId,
         };
       })
     );
