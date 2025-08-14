@@ -265,7 +265,7 @@ export const getAllUsers = query({
     const usersWithFollowStatus = await Promise.all(
       profiles.map(async (profile) => {
         let isFollowing = false;
-        if (currentUserId && currentUserId !== profile.userId) {
+        if (currentUserId && !currentUserId.equals(profile.userId)) {
           const followRecord = await ctx.db
             .query("follows")
             .withIndex("by_follower_following", (q) =>
@@ -285,7 +285,7 @@ export const getAllUsers = query({
           ...profile,
           profilePhotoUrl,
           isFollowing,
-          canFollow: currentUserId && currentUserId !== profile.userId,
+          canFollow: currentUserId && !currentUserId.equals(profile.userId),
         };
       })
     );

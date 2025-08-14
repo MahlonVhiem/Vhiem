@@ -182,7 +182,7 @@ export const getProfileById = query({
     const currentUserId = await getAuthUserId(ctx);
     let isFollowing = false;
     
-    if (currentUserId && currentUserId !== args.userId) {
+    if (currentUserId && !currentUserId.equals(args.userId)) {
       const followRecord = await ctx.db
         .query("follows")
         .withIndex("by_follower_following", (q) =>
@@ -198,8 +198,8 @@ export const getProfileById = query({
       followerCount: followers.length,
       followingCount: following.length,
       isFollowing,
-      canFollow: currentUserId && currentUserId !== args.userId,
-      isOwnProfile: currentUserId === args.userId,
+      canFollow: currentUserId && !currentUserId.equals(args.userId),
+      isOwnProfile: currentUserId?.equals(args.userId),
     };
   },
 });
