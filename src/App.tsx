@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useQuery } from "convex/react";
-import { Authenticated, Unauthenticated } from "@convex-dev/auth/react";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { SignInButton, SignOutButton, UserButton } from "@clerk/clerk-react";
 import { api } from "../convex/_generated/api";
 import { Toaster } from "sonner";
@@ -24,9 +24,9 @@ export default function App() {
                 Vhiem
               </h1>
             </div>
-            <Authenticated>
+            <ConvexAuthProvider.Authenticated>
               <UserButton />
-            </Authenticated>
+            </ConvexAuthProvider.Authenticated>
           </div>
         </header>
         
@@ -70,17 +70,17 @@ function Content() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Unauthenticated>
+      <ConvexAuthProvider.Unauthenticated>
         <LandingPage onRoleSelect={setPreSelectedRole} />
-      </Unauthenticated>
+      </ConvexAuthProvider.Unauthenticated>
 
-      <Authenticated>
+      <ConvexAuthProvider.Authenticated>
         {!userProfile ? (
           <RoleSelection preSelectedRole={preSelectedRole || undefined} />
         ) : (
           <Dashboard />
         )}
-      </Authenticated>
+      </ConvexAuthProvider.Authenticated>
     </div>
   );
 }
