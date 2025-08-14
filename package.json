@@ -11,9 +11,12 @@
     "lint": "tsc -p convex -noEmit --pretty false && tsc -p . -noEmit --pretty false && convex dev --once && vite build"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.42.0",
+    "@clerk/themes": "^2.4.9",
     "@convex-dev/auth": "^0.0.88",
     "clsx": "^2.1.1",
     "convex": "^1.25.4",
+    "convex-helpers": "^0.1.103",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sonner": "^2.0.3",
