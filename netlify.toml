@@ -1,5 +1,5 @@
 [build]
-  command = "npx convex deploy && npm run build:frontend"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
