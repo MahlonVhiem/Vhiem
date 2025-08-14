@@ -10,32 +10,15 @@ export const createProfile = mutation({
     bio: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const clerkUserId = await getAuthUserId(ctx);
-    if (!clerkUserId) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       throw new Error("Not authenticated");
-    }
-
-    // First, create or get the user document
-    let user = await ctx.db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
-      .unique();
-
-    if (!user) {
-      // Create user document if it doesn't exist
-      const userId = await ctx.db.insert("users", {
-        clerkId: clerkUserId,
-      });
-      user = await ctx.db.get(userId);
-      if (!user) {
-        throw new Error("Failed to create user");
-      }
     }
 
     // Check if profile already exists
     const existingProfile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .unique();
 
     if (existingProfile) {
@@ -43,7 +26,7 @@ export const createProfile = mutation({
     }
 
     const profileId = await ctx.db.insert("userProfiles", {
-      userId: user._id,
+      userId: ctx.db.normalizeId("users", userId),
       role: args.role,
       displayName: args.displayName,
       bio: args.bio,
@@ -55,7 +38,7 @@ export const createProfile = mutation({
 
     // Award welcome points
     await ctx.db.insert("pointTransactions", {
-      userId: user._id,
+      userId: ctx.db.normalizeId("users", userId),
       points: 100,
       action: "welcome",
       description: "Welcome to Vhiem! 🙏",
@@ -68,24 +51,14 @@ export const createProfile = mutation({
 export const getUserProfile = query({
   args: {},
   handler: async (ctx) => {
-    const clerkUserId = await getAuthUserId(ctx);
-    if (!clerkUserId) {
-      return null;
-    }
-
-    // Get the user document first
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
-      .unique();
-
-    if (!user) {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
       return null;
     }
 
     const profile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .unique();
 
     if (!profile) {
@@ -282,15 +255,7 @@ export const getFollowCounts = query({
 export const getAllUsers = query({
   args: {},
   handler: async (ctx) => {
-    const clerkUserId = await getAuthUserId(ctx);
-    let currentUser = null;
-    if (clerkUserId) {
-      currentUser = await ctx.db
-        .query("users")
-        .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
-        .unique();
-    }
-
+    const currentUserId = await getAuthUserId(ctx);
     const profiles = await ctx.db
       .query("userProfiles")
       .order("desc")
@@ -299,11 +264,11 @@ export const getAllUsers = query({
     const usersWithFollowStatus = await Promise.all(
       profiles.map(async (profile) => {
         let isFollowing = false;
-        if (currentUser && currentUser._id !== profile.userId) {
+        if (currentUserId && currentUserId !== profile.userId) {
           const followRecord = await ctx.db
             .query("follows")
-            .withIndex("by_follower_following", (q) =>
-              q.eq("followerId", currentUser._id).eq("followingId", profile.userId)
+            .withIndex("by_follower_following", (q) => 
+              q.eq("followerId", currentUserId).eq("followingId", profile.userId)
             )
             .unique();
           isFollowing = !!followRecord;
@@ -319,7 +284,7 @@ export const getAllUsers = query({
           ...profile,
           profilePhotoUrl,
           isFollowing,
-          canFollow: currentUser && currentUser._id !== profile.userId,
+          canFollow: currentUserId && currentUserId !== profile.userId,
         };
       })
     );
