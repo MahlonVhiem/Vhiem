@@ -58,6 +58,8 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
         bio: bio.trim() || undefined,
       });
       toast.success("Welcome to Vhiem! You've earned 100 points! 🎉");
+      // Clear the pre-selected role from localStorage since profile is now complete
+      localStorage.removeItem('vhiem-preselected-role');
     } catch (error) {
       toast.error("Failed to create profile. Please try again.");
       console.error(error);
