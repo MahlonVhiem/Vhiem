@@ -12,20 +12,20 @@ A full-stack social media marketplace application built with React, Vite, and Co
 
 ## Getting Started
 
-1. First, set up Convex (one-time setup):
+1. Install dependencies:
    ```bash
-   npm run setup
+   npm install
    ```
-   Follow the prompts to either login to Convex or run locally.
 
-2. After Convex setup is complete, start the development server:
+2. Set up your Convex backend:
+   ```bash
+   npx convex dev
+   ```
+   This will prompt you to create a new Convex project and deploy your schema.
+
+3. Start the development server:
    ```bash
    npm run dev
-   ```
-
-3. In a separate terminal, run the Convex backend:
-   ```bash
-   npm run dev:backend
    ```
 
 ## Project Structure
