@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import { useQuery } from "convex/react";
 import { Authenticated, Unauthenticated } from "@convex-dev/auth/react";
-import { SignInButton, SignOutButton, UserButton } from "@clerk/clerk-react";
 import { api } from "../convex/_generated/api";
 import { Toaster } from "sonner";
 import { RoleSelection } from "./components/RoleSelection";
 import { Dashboard } from "./components/Dashboard";
 import { LandingPage } from "./components/LandingPage";
 import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
 
 export default function App() {
+  const { signOut } = useAuthActions();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-orange-500">
@@ -25,7 +26,12 @@ export default function App() {
               </h1>
             </div>
             <Authenticated>
-              <UserButton />
+              <button
+                onClick={() => void signOut()}
+                className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
+              >
+                Sign Out
+              </button>
             </Authenticated>
           </div>
         </header>
