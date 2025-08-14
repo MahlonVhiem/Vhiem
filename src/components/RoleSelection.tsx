@@ -158,10 +158,10 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
 
             <button
               type="submit"
-              disabled={!selectedRole || isLoading}
+              disabled={!selectedRole || isLoading || isConvexAuthLoading || !isConvexAuthenticated}
               className="w-full py-3 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
             >
-              {isLoading ? "Creating Profile..." : "Join Vhiem Community"}
+              {isConvexAuthLoading ? "Connecting..." : isLoading ? "Creating Profile..." : "Join Vhiem Community"}
             </button>
           </form>
         </div>
