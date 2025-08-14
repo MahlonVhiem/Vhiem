@@ -158,7 +158,7 @@ export const followUser = mutation({
       throw new Error("Not authenticated");
     }
 
-    if (currentUserId === args.userId) {
+    if (currentUserId.equals(args.userId)) {
       throw new Error("Cannot follow yourself");
     }
 
