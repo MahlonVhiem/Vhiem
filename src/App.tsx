@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "convex/react";
-import { useAuth, UserButton } from "@clerk/clerk-react";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { SignInButton, SignOutButton, UserButton } from "@clerk/clerk-react";
 import { api } from "../convex/_generated/api";
 import { Toaster } from "sonner";
 import { RoleSelection } from "./components/RoleSelection";
@@ -9,7 +10,6 @@ import { LandingPage } from "./components/LandingPage";
 import { useState } from "react";
 
 export default function App() {
-  const { isSignedIn, isLoaded } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-orange-500">
@@ -24,9 +24,9 @@ export default function App() {
                 Vhiem
               </h1>
             </div>
-            {isSignedIn && (
+            <ConvexAuthProvider.Authenticated>
               <UserButton />
-            )}
+            </ConvexAuthProvider.Authenticated>
           </div>
         </header>
         
@@ -41,7 +41,6 @@ export default function App() {
 }
 
 function Content() {
-  const { isSignedIn, isLoaded } = useAuth();
   const userProfile = useQuery(api.users.getUserProfile);
   const [preSelectedRole, setPreSelectedRole] = useState<"shopper" | "business" | "delivery_driver" | null>(null);
 
@@ -61,14 +60,6 @@ function Content() {
     }
   }, [userProfile]);
 
-  if (!isLoaded) {
-    return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent"></div>
-      </div>
-    );
-  }
-
   if (userProfile === undefined) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
@@ -79,17 +70,17 @@ function Content() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {!isSignedIn && (
+      <ConvexAuthProvider.Unauthenticated>
         <LandingPage onRoleSelect={setPreSelectedRole} />
-      )}
+      </ConvexAuthProvider.Unauthenticated>
 
-      {isSignedIn && (
+      <ConvexAuthProvider.Authenticated>
         {!userProfile ? (
           <RoleSelection preSelectedRole={preSelectedRole || undefined} />
         ) : (
           <Dashboard />
         )}
-      )}
+      </ConvexAuthProvider.Authenticated>
     </div>
   );
 }
