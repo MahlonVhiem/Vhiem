@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { Id } from "convex/values";
+import { Id } from "./_generated/dataModel";
 
 export const createProfile = mutation({
   args: {
@@ -15,7 +15,7 @@ export const createProfile = mutation({
       throw new Error("Not authenticated");
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     // Check if profile already exists
     const existingProfile = await ctx.db
@@ -58,7 +58,7 @@ export const getUserProfile = query({
       return null;
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     const profile = await ctx.db
       .query("userProfiles")
@@ -122,7 +122,7 @@ export const awardPoints = mutation({
       throw new Error("Not authenticated");
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     const profile = await ctx.db
       .query("userProfiles")
@@ -164,7 +164,7 @@ export const followUser = mutation({
       throw new Error("Not authenticated");
     }
 
-    const currentUserIdAsId = currentUserId as Id<"users">;
+    const currentUserIdAsId = ctx.db.normalizeId("users", currentUserId);
 
     if (currentUserId === args.userId) {
       throw new Error("Cannot follow yourself");
@@ -201,7 +201,7 @@ export const unfollowUser = mutation({
       throw new Error("Not authenticated");
     }
 
-    const currentUserIdAsId = currentUserId as Id<"users">;
+    const currentUserIdAsId = ctx.db.normalizeId("users", currentUserId);
 
     const existingFollow = await ctx.db
       .query("follows")
@@ -229,7 +229,7 @@ export const isFollowing = query({
       return false;
     }
 
-    const currentUserIdAsId = currentUserId as Id<"users">;
+    const currentUserIdAsId = ctx.db.normalizeId("users", currentUserId);
 
     const existingFollow = await ctx.db
       .query("follows")
@@ -277,7 +277,7 @@ export const getAllUsers = query({
       profiles.map(async (profile) => {
         let isFollowing = false;
         if (currentUserId && currentUserId !== profile.userId) {
-          const currentUserIdAsId = currentUserId as Id<"users">;
+          const currentUserIdAsId = ctx.db.normalizeId("users", currentUserId);
           const followRecord = await ctx.db
             .query("follows")
             .withIndex("by_follower_following", (q) => 

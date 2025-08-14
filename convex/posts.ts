@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { Id } from "convex/values";
+import { Id } from "./_generated/dataModel";
 
 export const createPost = mutation({
   args: {
@@ -16,7 +16,7 @@ export const createPost = mutation({
       throw new Error("Not authenticated");
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     const postId = await ctx.db.insert("posts", {
       authorId: userIdAsId,
@@ -235,7 +235,7 @@ export const likePost = mutation({
       throw new Error("Not authenticated");
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     // Check if already liked
     const existingLike = await ctx.db
@@ -302,7 +302,7 @@ export const likeComment = mutation({
       throw new Error("Not authenticated");
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     // Check if already liked
     const existingLike = await ctx.db
@@ -371,7 +371,7 @@ export const addComment = mutation({
       throw new Error("Not authenticated");
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     const commentId = await ctx.db.insert("comments", {
       postId: args.postId,
@@ -424,7 +424,7 @@ export const addCommentReply = mutation({
       throw new Error("Not authenticated");
     }
 
-    const userIdAsId = userId as Id<"users">;
+    const userIdAsId = ctx.db.normalizeId("users", userId);
 
     const replyId = await ctx.db.insert("commentReplies", {
       commentId: args.commentId,
