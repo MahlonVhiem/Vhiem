@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
-import { useConvexAuth } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 
@@ -14,7 +13,6 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
   const [bio, setBio] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
-  const { isLoading: isConvexAuthLoading, isAuthenticated: isConvexAuthenticated } = useConvexAuth();
   const createProfile = useMutation(api.users.createProfile);
 
   // Set the pre-selected role when component mounts
@@ -50,7 +48,7 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedRole || !displayName.trim() || isConvexAuthLoading || !isConvexAuthenticated) return;
+    if (!selectedRole || !displayName.trim()) return;
 
     setIsLoading(true);
     try {
@@ -159,10 +157,10 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
 
             <button
               type="submit"
-              disabled={!selectedRole || !displayName.trim() || isLoading || isConvexAuthLoading || !isConvexAuthenticated}
+              disabled={!selectedRole || !displayName.trim() || isLoading}
               className="w-full py-3 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
             >
-              {isConvexAuthLoading ? "Connecting..." : isLoading ? "Creating Profile..." : "Join Vhiem Community"}
+              {isLoading ? "Creating Profile..." : "Join Vhiem Community"}
             </button>
           </form>
         </div>
