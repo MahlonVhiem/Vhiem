@@ -10,6 +10,7 @@ import { ProfileView } from "./ProfileView";
 import { ProfileEdit } from "./ProfileEdit";
 import { ProfilePhotoUpload } from "./ProfilePhotoUpload";
 import { ClickableProfilePicture } from "./ClickableProfilePicture";
+import { VoiceChatRoomPage } from "./VoiceChatRoomPage";
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<"feed" | "create" | "voice" | "stats" | "leaderboard" | "people">("feed");
