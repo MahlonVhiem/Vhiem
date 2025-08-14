@@ -179,14 +179,21 @@ export const getProfileById = query({
       .collect();
 
     // Check if current user is following this profile
-    const currentUserId = await getAuthUserId(ctx);
+    const clerkUserId = await getAuthUserId(ctx);
+    let currentUser = null;
     let isFollowing = false;
+    if (clerkUserId) {
+      currentUser = await ctx.db
+        .query("users")
+        .withIndex("by_clerk_id", (q) => q.eq("clerkId", clerkUserId))
+        .unique();
+    }
     
-    if (currentUserId && !currentUserId.equals(args.userId)) {
+    if (currentUser && currentUser._id !== args.userId) {
       const followRecord = await ctx.db
         .query("follows")
         .withIndex("by_follower_following", (q) =>
-          q.eq("followerId", currentUserId).eq("followingId", args.userId)
+          q.eq("followerId", currentUser._id).eq("followingId", args.userId)
         )
         .unique();
       isFollowing = !!followRecord;
@@ -198,8 +205,8 @@ export const getProfileById = query({
       followerCount: followers.length,
       followingCount: following.length,
       isFollowing,
-      canFollow: currentUserId && !currentUserId.equals(args.userId),
-      isOwnProfile: currentUserId?.equals(args.userId),
+      canFollow: currentUser && currentUser._id !== args.userId,
+      isOwnProfile: currentUser?._id === args.userId,
     };
   },
 });
