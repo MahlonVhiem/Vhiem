@@ -12,8 +12,6 @@
   },
   "dependencies": {
     "@convex-dev/auth": "^0.0.88",
-    "agora-rtc-sdk-ng": "^4.24.0",
-    "agora-token": "^2.0.5",
     "clsx": "^2.1.1",
     "convex": "^1.25.4",
     "react": "^19.0.0",
