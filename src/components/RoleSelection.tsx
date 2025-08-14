@@ -50,21 +50,27 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedRole || !displayName.trim() || isConvexAuthLoading || !isConvexAuthenticated) return;
+    if (!selectedRole || isLoading) {
+      console.log("Form submission blocked:", { selectedRole, isLoading });
+      return;
+    }
 
     setIsLoading(true);
+    console.log("Attempting to create profile:", { selectedRole, displayName, bio });
+    
     try {
       await createProfile({
         role: selectedRole,
         displayName: displayName.trim(),
         bio: bio.trim() || undefined,
       });
+      console.log("Profile created successfully");
       toast.success("Welcome to Vhiem! You've earned 100 points! 🎉");
       // Clear the pre-selected role from localStorage since profile is now complete
       localStorage.removeItem('vhiem-preselected-role');
     } catch (error) {
+      console.error("Profile creation failed:", error);
       toast.error("Failed to create profile. Please try again.");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
