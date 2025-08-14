@@ -10,7 +10,7 @@ interface RoleSelectionProps {
 
 export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
   const [selectedRole, setSelectedRole] = useState<"shopper" | "business" | "delivery_driver" | null>(preSelectedRole || null);
-  const [displayName, setDisplayName] = useState("Unknown");
+  const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
@@ -132,14 +132,15 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-white font-medium mb-2">
-                Display Name
+                Display Name *
               </label>
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                placeholder="Enter your display name (defaults to 'Unknown')"
+                placeholder="Enter your display name"
+                required
               />
             </div>
             
@@ -158,7 +159,7 @@ export function RoleSelection({ preSelectedRole }: RoleSelectionProps) {
 
             <button
               type="submit"
-              disabled={!selectedRole || isLoading || isConvexAuthLoading || !isConvexAuthenticated}
+              disabled={!selectedRole || !displayName.trim() || isLoading || isConvexAuthLoading || !isConvexAuthenticated}
               className="w-full py-3 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
             >
               {isConvexAuthLoading ? "Connecting..." : isLoading ? "Creating Profile..." : "Join Vhiem Community"}
