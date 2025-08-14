@@ -1,36 +1,13 @@
 import { useState } from "react";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { SignIn, SignUp } from "@clerk/clerk-react";
 
 interface LandingPageProps {
   onRoleSelect: (role: "shopper" | "business" | "delivery_driver") => void;
 }
 
 export function LandingPage({ onRoleSelect }: LandingPageProps) {
-  const { signIn } = useAuthActions();
   const [selectedRole, setSelectedRole] = useState<"shopper" | "business" | "delivery_driver" | null>(null);
-  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signUp");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) return;
-
-    setIsLoading(true);
-    try {
-      if (authMode === "signUp") {
-        await signIn("password", { email, password, flow: "signUp" });
-      } else {
-        await signIn("password", { email, password, flow: "signIn" });
-      }
-    } catch (error) {
-      console.error("Auth error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn");
 
   const roles = [
     {
@@ -130,39 +107,41 @@ export function LandingPage({ onRoleSelect }: LandingPageProps) {
               </button>
             </div>
             
-            <form onSubmit={handleAuth} className="space-y-4">
-              <div>
-                <label className="block text-white font-medium mb-2">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-white font-medium mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Enter your password"
-                  required
-                />
-              </div>
-              
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 disabled:opacity-50"
-              >
-                {isLoading ? "Loading..." : (authMode === "signIn" ? "Sign In" : "Sign Up")}
-              </button>
-            </form>
+            {authMode === "signIn" ? (
+              <SignIn 
+                appearance={{
+                  elements: {
+                    rootBox: "w-full",
+                    card: "bg-transparent shadow-none",
+                    headerTitle: "text-white",
+                    headerSubtitle: "text-white/80",
+                    socialButtonsBlockButton: "bg-white/10 border-white/20 text-white hover:bg-white/20",
+                    formFieldInput: "bg-white/10 border-white/20 text-white",
+                    formButtonPrimary: "bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600",
+                    footerActionLink: "text-yellow-400 hover:text-yellow-300",
+                  }
+                }}
+                forceRedirectUrl={window.location.origin}
+                signInForceRedirectUrl={window.location.origin}
+              />
+            ) : (
+              <SignUp 
+                appearance={{
+                  elements: {
+                    rootBox: "w-full",
+                    card: "bg-transparent shadow-none",
+                    headerTitle: "text-white",
+                    headerSubtitle: "text-white/80",
+                    socialButtonsBlockButton: "bg-white/10 border-white/20 text-white hover:bg-white/20",
+                    formFieldInput: "bg-white/10 border-white/20 text-white",
+                    formButtonPrimary: "bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600",
+                    footerActionLink: "text-yellow-400 hover:text-yellow-300",
+                  }
+                }}
+                forceRedirectUrl={window.location.origin}
+                signUpForceRedirectUrl={window.location.origin}
+              />
+            )}
           </div>
           <div className="mt-4 text-center">
             <p className="text-white/60 text-sm">

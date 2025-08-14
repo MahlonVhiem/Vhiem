@@ -1,19 +1,30 @@
 import { createRoot } from "react-dom/client";
-import { ConvexReactClient } from "convex/react";
-import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ClerkProvider, useAuth } from "@clerk/clerk-react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 import "./index.css";
 import App from "./App";
 
 const convexUrl = import.meta.env.VITE_CONVEX_URL;
+const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-if (!convexUrl) {
-  console.error("Missing VITE_CONVEX_URL environment variable. Please run 'npm run setup' first.");
+if (!convexUrl || convexUrl === "") {
+  throw new Error(
+    "Missing VITE_CONVEX_URL environment variable.\n" +
+    "Please run 'npm run setup' first to configure Convex, then restart the dev server."
+  );
 }
 
-const convex = new ConvexReactClient(convexUrl || "");
+if (!clerkPublishableKey) {
+  throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY environment variable");
+}
+
+const convex = new ConvexReactClient(convexUrl);
 
 createRoot(document.getElementById("root")!).render(
-  <ConvexAuthProvider client={convex}>
+  <ClerkProvider publishableKey={clerkPublishableKey}>
+    <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
       <App />
-  </ConvexAuthProvider>,
+    </ConvexProviderWithClerk>
+  </ClerkProvider>,
 );

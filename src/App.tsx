@@ -1,16 +1,14 @@
 import { useQuery } from "convex/react";
-import { Authenticated, Unauthenticated } from "@convex-dev/auth/react";
+import { Authenticated, Unauthenticated } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { SignIn, SignUp, UserButton } from "@clerk/clerk-react";
 import { Toaster } from "sonner";
 import { RoleSelection } from "./components/RoleSelection";
 import { Dashboard } from "./components/Dashboard";
 import { LandingPage } from "./components/LandingPage";
-import { useState } from "react";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { useState, useEffect } from "react";
 
 export default function App() {
-  const { signOut } = useAuthActions();
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-orange-500">
       <div className="min-h-screen bg-black/20 backdrop-blur-sm">
@@ -25,12 +23,15 @@ export default function App() {
               </h1>
             </div>
             <Authenticated>
-              <button
-                onClick={() => void signOut()}
-                className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
-              >
-                Sign Out
-              </button>
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: "w-10 h-10",
+                    userButtonPopoverCard: "bg-white/10 backdrop-blur-md border border-white/20",
+                    userButtonPopoverActionButton: "text-white hover:bg-white/10",
+                  }
+                }}
+              />
             </Authenticated>
           </div>
         </header>
