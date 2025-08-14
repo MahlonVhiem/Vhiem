@@ -1,7 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { ConvexReactClient } from "convex/react";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
-import { ClerkProvider, useAuth as useClerkAuth } from "@clerk/clerk-react";
 import "./index.css";
 import App from "./App";
 
@@ -13,19 +12,8 @@ if (!convexUrl) {
 
 const convex = new ConvexReactClient(convexUrl || "");
 
-function useAuth() {
-  const { isLoaded, isSignedIn, getToken } = useClerkAuth();
-  return {
-    isLoading: !isLoaded,
-    isAuthenticated: isSignedIn,
-    getToken: () => getToken({ template: "convex" }),
-  };
-}
-
 createRoot(document.getElementById("root")!).render(
-  <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || ""}>
-    <ConvexAuthProvider client={convex} useAuth={useAuth}>
-        <App />
-    </ConvexAuthProvider>
-  </ClerkProvider>,
+  <ConvexAuthProvider client={convex}>
+    <App />
+  </ConvexAuthProvider>,
 );
