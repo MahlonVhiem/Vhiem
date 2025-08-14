@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export function SignInForm() {
-  const { signIn } = useAuthActions();
+  const { signIn, signOut } = useAuthActions();
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,6 +24,14 @@ export function SignInForm() {
               // Optionally, you might want to redirect or show a success message here
             })
             .catch((error) => {
+            // Handle InvalidAccountId error by clearing stale auth state
+            if (error.message.includes("InvalidAccountId")) {
+              signOut();
+              toast.error("Session expired. Please sign in again.");
+              setSubmitting(false);
+              return;
+            }
+            
             let toastTitle = "";
             if (error.message.includes("Invalid password")) {
               toastTitle = "Invalid password. Please try again.";
