@@ -1,36 +1,13 @@
 import { useState } from "react";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 
 interface LandingPageProps {
   onRoleSelect: (role: "shopper" | "business" | "delivery_driver") => void;
 }
 
 export function LandingPage({ onRoleSelect }: LandingPageProps) {
-  const { signIn } = useAuthActions();
   const [selectedRole, setSelectedRole] = useState<"shopper" | "business" | "delivery_driver" | null>(null);
-  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signUp");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) return;
-
-    setIsLoading(true);
-    try {
-      if (authMode === "signUp") {
-        await signIn("password", { email, password, flow: "signUp" });
-      } else {
-        await signIn("password", { email, password, flow: "signIn" });
-      }
-    } catch (error) {
-      console.error("Auth error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const roles = [
     {
@@ -106,63 +83,18 @@ export function LandingPage({ onRoleSelect }: LandingPageProps) {
         </div>
         
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 max-w-md mx-auto">
-          <div className="space-y-4">
-            <div className="flex space-x-2 mb-4">
-              <button
-                onClick={() => setAuthMode("signIn")}
-                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-                  authMode === "signIn"
-                    ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-black"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => setAuthMode("signUp")}
-                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-                  authMode === "signUp"
-                    ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-black"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                }`}
-              >
+          <div className="space-y-4 text-center">
+            <SignUpButton mode="modal">
+              <button className="w-full py-3 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300">
                 Sign Up
               </button>
-            </div>
+            </SignUpButton>
             
-            <form onSubmit={handleAuth} className="space-y-4">
-              <div>
-                <label className="block text-white font-medium mb-2">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-white font-medium mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Enter your password"
-                  required
-                />
-              </div>
-              
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 disabled:opacity-50"
-              >
-                {isLoading ? "Loading..." : (authMode === "signIn" ? "Sign In" : "Sign Up")}
+            <SignInButton mode="modal">
+              <button className="w-full py-3 px-6 bg-white/20 text-white font-bold rounded-lg hover:bg-white/30 transition-all duration-300">
+                Sign In
               </button>
-            </form>
+            </SignInButton>
           </div>
           <div className="mt-4 text-center">
             <p className="text-white/60 text-sm">
