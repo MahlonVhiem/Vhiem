@@ -84,11 +84,11 @@ function Content() {
       )}
 
       {isSignedIn && (
-        {!userProfile ? (
+        !userProfile ? (
           <RoleSelection preSelectedRole={preSelectedRole || undefined} />
         ) : (
           <Dashboard />
-        )}
+        )
       )}
     </div>
   );
