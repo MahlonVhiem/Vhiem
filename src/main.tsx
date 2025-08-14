@@ -8,11 +8,10 @@ import App from "./App";
 const convexUrl = import.meta.env.VITE_CONVEX_URL;
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-if (!convexUrl) {
+if (!convexUrl || convexUrl === "") {
   throw new Error(
     "Missing VITE_CONVEX_URL environment variable.\n" +
-    "Run 'npm run dev' to start the Convex development server, or\n" +
-    "add VITE_CONVEX_URL to your .env.local file."
+    "Please run 'npm run setup' first to configure Convex, then restart the dev server."
   );
 }
 
