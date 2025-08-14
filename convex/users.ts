@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { Id } from "convex/values";
 
 export const createProfile = mutation({
   args: {
@@ -14,10 +15,12 @@ export const createProfile = mutation({
       throw new Error("Not authenticated");
     }
 
+    const userIdAsId = userId as Id<"users">;
+
     // Check if profile already exists
     const existingProfile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", userIdAsId))
       .unique();
 
     if (existingProfile) {
@@ -25,7 +28,7 @@ export const createProfile = mutation({
     }
 
     const profileId = await ctx.db.insert("userProfiles", {
-      userId,
+      userId: userIdAsId,
       role: args.role,
       displayName: args.displayName,
       bio: args.bio,
@@ -37,7 +40,7 @@ export const createProfile = mutation({
 
     // Award welcome points
     await ctx.db.insert("pointTransactions", {
-      userId,
+      userId: userIdAsId,
       points: 100,
       action: "welcome",
       description: "Welcome to Vhiem! 🙏",
@@ -55,9 +58,11 @@ export const getUserProfile = query({
       return null;
     }
 
+    const userIdAsId = userId as Id<"users">;
+
     const profile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", userIdAsId))
       .unique();
 
     if (!profile) {
@@ -117,9 +122,11 @@ export const awardPoints = mutation({
       throw new Error("Not authenticated");
     }
 
+    const userIdAsId = userId as Id<"users">;
+
     const profile = await ctx.db
       .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user", (q) => q.eq("userId", userIdAsId))
       .unique();
 
     if (!profile) {
@@ -137,7 +144,7 @@ export const awardPoints = mutation({
 
     // Record transaction
     await ctx.db.insert("pointTransactions", {
-      userId,
+      userId: userIdAsId,
       points: args.points,
       action: args.action,
       description: args.description,
@@ -157,6 +164,8 @@ export const followUser = mutation({
       throw new Error("Not authenticated");
     }
 
+    const currentUserIdAsId = currentUserId as Id<"users">;
+
     if (currentUserId === args.userId) {
       throw new Error("Cannot follow yourself");
     }
@@ -165,7 +174,7 @@ export const followUser = mutation({
     const existingFollow = await ctx.db
       .query("follows")
       .withIndex("by_follower_following", (q) => 
-        q.eq("followerId", currentUserId).eq("followingId", args.userId)
+        q.eq("followerId", currentUserIdAsId).eq("followingId", args.userId)
       )
       .unique();
 
@@ -174,7 +183,7 @@ export const followUser = mutation({
     }
 
     await ctx.db.insert("follows", {
-      followerId: currentUserId,
+      followerId: currentUserIdAsId,
       followingId: args.userId,
     });
 
@@ -192,10 +201,12 @@ export const unfollowUser = mutation({
       throw new Error("Not authenticated");
     }
 
+    const currentUserIdAsId = currentUserId as Id<"users">;
+
     const existingFollow = await ctx.db
       .query("follows")
       .withIndex("by_follower_following", (q) => 
-        q.eq("followerId", currentUserId).eq("followingId", args.userId)
+        q.eq("followerId", currentUserIdAsId).eq("followingId", args.userId)
       )
       .unique();
 
@@ -218,10 +229,12 @@ export const isFollowing = query({
       return false;
     }
 
+    const currentUserIdAsId = currentUserId as Id<"users">;
+
     const existingFollow = await ctx.db
       .query("follows")
       .withIndex("by_follower_following", (q) => 
-        q.eq("followerId", currentUserId).eq("followingId", args.userId)
+        q.eq("followerId", currentUserIdAsId).eq("followingId", args.userId)
       )
       .unique();
 
@@ -264,10 +277,11 @@ export const getAllUsers = query({
       profiles.map(async (profile) => {
         let isFollowing = false;
         if (currentUserId && currentUserId !== profile.userId) {
+          const currentUserIdAsId = currentUserId as Id<"users">;
           const followRecord = await ctx.db
             .query("follows")
             .withIndex("by_follower_following", (q) => 
-              q.eq("followerId", currentUserId).eq("followingId", profile.userId)
+              q.eq("followerId", currentUserIdAsId).eq("followingId", profile.userId)
             )
             .unique();
           isFollowing = !!followRecord;
