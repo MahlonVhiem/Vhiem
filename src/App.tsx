@@ -83,8 +83,12 @@ function Content() {
         <LandingPage onRoleSelect={setPreSelectedRole} />
       )}
 
-      {isSignedIn && (
+      {isSignedIn && userProfile && (
         <Dashboard />
+      )}
+
+      {isSignedIn && userProfile === null && (
+        <RoleSelection preSelectedRole={preSelectedRole} />
       )}
     </div>
   );
