@@ -58,14 +58,6 @@ function Content() {
     }
   }, []);
 
-  // Auto-navigate to feed tab after profile creation
-  useEffect(() => {
-    if (userProfile) {
-      // Clear any pre-selected role since profile is now complete
-      localStorage.removeItem('vhiem-preselected-role');
-    }
-  }, [userProfile]);
-
   if (userProfile === undefined) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">

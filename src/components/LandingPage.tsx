@@ -121,8 +121,7 @@ export function LandingPage({ onRoleSelect }: LandingPageProps) {
                     footerActionLink: "text-yellow-400 hover:text-yellow-300",
                   }
                 }}
-                forceRedirectUrl={window.location.origin}
-                signInForceRedirectUrl={window.location.origin}
+                redirectUrl="/dashboard"
               />
             ) : (
               <SignUp 
@@ -138,8 +137,7 @@ export function LandingPage({ onRoleSelect }: LandingPageProps) {
                     footerActionLink: "text-yellow-400 hover:text-yellow-300",
                   }
                 }}
-                forceRedirectUrl={window.location.origin}
-                signUpForceRedirectUrl={window.location.origin}
+                redirectUrl="/dashboard"
               />
             )}
           </div>
