@@ -1,42 +1,29 @@
 # Vhiem - Gamified Christian Social Platform
+  
+This is a project built with [Chef](https://chef.convex.dev) using [Convex](https://convex.dev) as its backend.
+ You can find docs about Chef with useful information like how to deploy to production [here](https://docs.convex.dev/chef).
+  
+This project is connected to the Convex deployment named [`outgoing-heron-980`](https://dashboard.convex.dev/d/outgoing-heron-980).
+  
+## Project structure
+  
+The frontend code is in the `app` directory and is built with [Vite](https://vitejs.dev/).
+  
+The backend code is in the `convex` directory.
+  
+`npm run dev` will start the frontend and backend servers.
 
-A full-stack social media marketplace application built with React, Vite, and Convex.
+## App authentication
 
-## Features
+Chef apps use [Convex Auth](https://auth.convex.dev/) with Anonymous auth for easy sign in. You may wish to change this before deploying your app.
 
-- **Multi-role platform**: Shoppers, Businesses, and Delivery Drivers
-- **Gamified experience**: Points, levels, badges, and daily leaderboards
-- **Social features**: Posts, comments, likes, follows, and user mentions
-- **Real-time updates**: Powered by Convex for instant synchronization
-- **Responsive design**: Mobile-first design with Tailwind CSS
+## Developing and deploying your app
 
-## Getting Started
+Check out the [Convex docs](https://docs.convex.dev/) for more information on how to develop with Convex.
+* If you're new to Convex, the [Overview](https://docs.convex.dev/understanding/) is a good place to start
+* Check out the [Hosting and Deployment](https://docs.convex.dev/production/) docs for how to deploy your app
+* Read the [Best Practices](https://docs.convex.dev/understanding/best-practices/) guide for tips on how to improve you app further
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+## HTTP API
 
-2. Set up your Convex backend:
-   ```bash
-   npx convex dev
-   ```
-   This will prompt you to create a new Convex project and deploy your schema.
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-## Project Structure
-
-- `src/` - Frontend React application
-- `convex/` - Backend functions and schema
-- `convex/_generated/` - Auto-generated Convex files
-
-## Tech Stack
-
-- **Frontend**: React 19, Vite, Tailwind CSS
-- **Backend**: Convex (database, auth, real-time)
-- **Authentication**: Convex Auth with email/password and anonymous options
-- **Deployment**: Netlify (frontend), Convex (backend)
+User-defined http routes are defined in the `convex/router.ts` file. We split these routes into a separate file from `convex/http.ts` to allow us to prevent the LLM from modifying the authentication routes.
