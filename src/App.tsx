@@ -1,7 +1,7 @@
-import { useQuery } from "convex/react";
-import { Authenticated, Unauthenticated } from "convex/react";
+import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { SignIn, SignUp, UserButton } from "@clerk/clerk-react";
+import { SignInForm } from "./SignInForm";
+import { SignOutButton } from "./SignOutButton";
 import { Toaster } from "sonner";
 import { RoleSelection } from "./components/RoleSelection";
 import { Dashboard } from "./components/Dashboard";
@@ -23,15 +23,7 @@ export default function App() {
               </h1>
             </div>
             <Authenticated>
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: "w-10 h-10",
-                    userButtonPopoverCard: "bg-white/10 backdrop-blur-md border border-white/20",
-                    userButtonPopoverActionButton: "text-white hover:bg-white/10",
-                  }
-                }}
-              />
+              <SignOutButton />
             </Authenticated>
           </div>
         </header>

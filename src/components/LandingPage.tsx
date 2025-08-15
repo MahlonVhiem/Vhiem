@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SignIn, SignUp } from "@clerk/clerk-react";
+import { SignInForm } from "../SignInForm";
 
 interface LandingPageProps {
   onRoleSelect: (role: "shopper" | "business" | "delivery_driver") => void;
@@ -7,7 +7,6 @@ interface LandingPageProps {
 
 export function LandingPage({ onRoleSelect }: LandingPageProps) {
   const [selectedRole, setSelectedRole] = useState<"shopper" | "business" | "delivery_driver" | null>(null);
-  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn");
 
   const roles = [
     {
@@ -83,64 +82,7 @@ export function LandingPage({ onRoleSelect }: LandingPageProps) {
         </div>
         
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 max-w-md mx-auto">
-          <div className="space-y-4">
-            <div className="flex space-x-2 mb-4">
-              <button
-                onClick={() => setAuthMode("signIn")}
-                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-                  authMode === "signIn"
-                    ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-black"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                }`}
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => setAuthMode("signUp")}
-                className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-                  authMode === "signUp"
-                    ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-black"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                }`}
-              >
-                Sign Up
-              </button>
-            </div>
-            
-            {authMode === "signIn" ? (
-              <SignIn 
-                appearance={{
-                  elements: {
-                    rootBox: "w-full",
-                    card: "bg-transparent shadow-none",
-                    headerTitle: "text-white",
-                    headerSubtitle: "text-white/80",
-                    socialButtonsBlockButton: "bg-white/10 border-white/20 text-white hover:bg-white/20",
-                    formFieldInput: "bg-white/10 border-white/20 text-white",
-                    formButtonPrimary: "bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600",
-                    footerActionLink: "text-yellow-400 hover:text-yellow-300",
-                  }
-                }}
-                redirectUrl="/dashboard"
-              />
-            ) : (
-              <SignUp 
-                appearance={{
-                  elements: {
-                    rootBox: "w-full",
-                    card: "bg-transparent shadow-none",
-                    headerTitle: "text-white",
-                    headerSubtitle: "text-white/80",
-                    socialButtonsBlockButton: "bg-white/10 border-white/20 text-white hover:bg-white/20",
-                    formFieldInput: "bg-white/10 border-white/20 text-white",
-                    formButtonPrimary: "bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600",
-                    footerActionLink: "text-yellow-400 hover:text-yellow-300",
-                  }
-                }}
-                redirectUrl="/dashboard"
-              />
-            )}
-          </div>
+          <SignInForm />
           <div className="mt-4 text-center">
             <p className="text-white/60 text-sm">
               After signing in, you'll complete your {selectedRoleData?.title} profile
