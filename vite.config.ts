@@ -1,31 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import { loadEnv } from "vite";
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  
-  // Use production URLs for production builds, development URLs otherwise
-  const convexUrl = mode === 'production' 
-    ? env.VITE_CONVEX_URL_PROD 
-    : env.VITE_CONVEX_URL;
-  
-  const convexDeployUrl = mode === 'production'
-    ? env.VITE_CONVEX_DEPLOY_URL_PROD
-    : env.VITE_CONVEX_DEPLOY_URL;
-    
-  const convexHttpUrl = mode === 'production'
-    ? env.VITE_CONVEX_HTTP_URL_PROD
-    : env.VITE_CONVEX_HTTP_URL;
-
-  return {
-    define: {
-      'import.meta.env.VITE_CONVEX_URL': JSON.stringify(convexUrl),
-      'import.meta.env.VITE_CONVEX_DEPLOY_URL': JSON.stringify(convexDeployUrl),
-      'import.meta.env.VITE_CONVEX_HTTP_URL': JSON.stringify(convexHttpUrl),
-    },
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     // The code below enables dev tools like taking screenshots of your site
@@ -62,5 +40,4 @@ window.addEventListener('message', async (message) => {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  };
-});
+}));
