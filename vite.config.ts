@@ -4,6 +4,12 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
+  define: {
+    // Use production URLs when building for production
+    'import.meta.env.VITE_CONVEX_URL': mode === 'production' 
+      ? JSON.stringify(process.env.VITE_CONVEX_URL_PROD || process.env.VITE_CONVEX_URL)
+      : JSON.stringify(process.env.VITE_CONVEX_URL),
+  },
   plugins: [
     react(),
     // The code below enables dev tools like taking screenshots of your site
